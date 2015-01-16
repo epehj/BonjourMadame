@@ -48,7 +48,7 @@ public class BMParser extends AsyncTask<Void, Void, Bitmap> {
             //<img tag with src att
             String imgUrl = div.child(0).child(0).attr("src");
             Log.d(this.getClass().toString(), "ImgUrl Value "+ imgUrl);
-            getRemoteImage(new java.net.URL(imgUrl));
+            bitmap = getRemoteImage(new java.net.URL(imgUrl));
 
         } catch (IOException e) {
             e.printStackTrace();
