@@ -16,6 +16,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.ImageLoader;
+
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -30,11 +33,17 @@ import java.io.IOException;
  * ToDo : sauvegarder les images téléchargées dans un cache : pour pouvoir les réafficher si l'utilisateur relance l'appli sans avoir à reDL et qu'il ne voulait pas spécialement les sauvegarder
  * todo : faire une barre de progression du DL
  * todo : réduire la taille des images qui vont servir à faire un thumbnail (pour faire un genre de carroussel dans l'app, qui va permettre de choisir l'image à voir)
+ * todo utiliser volley pour DL les images plutot que un asynctask
  */
 public class MainActivity extends ActionBarActivity {
 
     private BMParser bm;
+    //useless non ?
     private Bitmap bitmap;
+
+    private RequestQueue mVolleyRequestQueue;
+    private ImageLoader mVolleyImageLoader;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +132,7 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+    //
     private void createCache() {
         try{
             DateTime today = new DateTime();
