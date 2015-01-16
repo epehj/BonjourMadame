@@ -6,10 +6,16 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="android.epehj.net.bonjourmadame.MainActivity">
 
-    <ImageView
+
+    <com.android.volley.toolbox.NetworkImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/netimageView"
+        />
+<!--    <ImageView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/imageView"
-         />
+         />-->
 
 </RelativeLayout>
