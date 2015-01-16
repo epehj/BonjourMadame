@@ -126,7 +126,7 @@ public class MainActivity extends ActionBarActivity {
     private void createCache() {
         try{
             DateTime today = new DateTime();
-            //internalStorage
+            //internalStorage test
             FileOutputStream fos = getApplicationContext().openFileOutput(today.toString("ddMMyyyy")+".jpeg", Context.MODE_PRIVATE);
             FileOutputStream fosThumb = getApplicationContext().openFileOutput(today.toString("ddMMyyyy")+"_thumb.jpeg", Context.MODE_PRIVATE);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 50, fos);
