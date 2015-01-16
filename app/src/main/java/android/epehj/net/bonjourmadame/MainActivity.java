@@ -110,7 +110,7 @@ public class MainActivity extends ActionBarActivity {
                 && lastMaj.getHourOfDay() < 10)) || (today.getDayOfYear() - lastMaj.getDayOfYear() > 0) || test)  {
             bm.execute();
             //asynctask donc il arrive que le bitmap soit null quand on y accède…
-            createCache();
+           //createCache();
         }
          else {
             showPic();

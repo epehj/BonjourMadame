@@ -2,7 +2,6 @@ package android.epehj.net.bonjourmadame.utils;
 
 import android.app.Activity;
 import android.content.Context;
-import android.epehj.net.bonjourmadame.MainActivity;
 import android.epehj.net.bonjourmadame.R;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -72,7 +71,7 @@ public class BMParser extends AsyncTask<Void, Void, Bitmap> {
         super.onPostExecute(bitmap);
         ImageView image = (ImageView) activity.findViewById(R.id.imageView);
         image.setImageBitmap(bitmap);
-        (MainActivity)activity.setBitmap() = bitmap;
+        //(MainActivity)activity.setBitmap(bi);
     }
 
     /**
