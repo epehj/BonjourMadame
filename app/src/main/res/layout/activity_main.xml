@@ -7,15 +7,15 @@
     tools:context="android.epehj.net.bonjourmadame.MainActivity">
 
 
-    <com.android.volley.toolbox.NetworkImageView
+<!--    <com.android.volley.toolbox.NetworkImageView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/netimageView"
-        />
-<!--    <ImageView
+        />-->
+    <ImageView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/imageView"
-         />-->
+         />
 
 </RelativeLayout>

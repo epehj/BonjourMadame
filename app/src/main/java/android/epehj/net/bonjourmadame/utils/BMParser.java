@@ -69,7 +69,7 @@ public class BMParser extends AsyncTask<Void, Void, Bitmap> {
     @Override
     protected void onPostExecute(Bitmap bitmap) {
         super.onPostExecute(bitmap);
-        ImageView image = (ImageView) activity.findViewById(R.id.netimageView);
+        ImageView image = (ImageView) activity.findViewById(R.id.imageView);
         image.setImageBitmap(bitmap);
         //(MainActivity)activity.setBitmap(bi);
     }
