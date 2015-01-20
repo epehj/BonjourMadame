@@ -1,35 +1,18 @@
 package android.epehj.net.bonjourmadame;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.epehj.net.bonjourmadame.utils.BMParser;
+import android.epehj.net.bonjourmadame.utils.BMUtils;
 import android.epehj.net.bonjourmadame.utils.Globals;
 import android.graphics.Bitmap;
-import android.media.ThumbnailUtils;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -45,109 +28,29 @@ import java.io.IOException;
  */
 public class MainActivity extends ActionBarActivity {
 
-    private BMParser bm;
-    //useless non ?
-    private Bitmap bitmap;
-    private RequestQueue requestQueue;
-    //private ImageLoader mVolleyImageLoader;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        bm = new BMParser(this);
 
-        // get the picture of the day
-        //getPicOfTheDay_async(true);
-
-        getPicOfTheDay_volley();
+        BMUtils.getPicOfTheDay_volley(this);
         /*View networkImageView = (NetworkImageView)findViewById(R.id.netimageView);*/
         View imageView = (ImageView)findViewById(R.id.imageView);
 
         imageView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                    savePic(bitmap);
+                // view contains a bitmap
+                if(((ImageView)v).getDrawable() != null) {
+                    //image from the view
+                    savePic(((BitmapDrawable) ((ImageView) v).getDrawable()).getBitmap());
+                }
                 return true;
             }
         });
     }
 
-    private void getPicOfTheDay_volley() {
-        requestQueue = Volley.newRequestQueue(getApplicationContext());
-        StringRequest sr = new StringRequest(Request.Method.GET, Globals.URL, new Response.Listener<String>() {
-            /**
-             * Called when a response is received.
-             *
-             * @param response string containing full html page
-             */
-            @Override
-            public void onResponse(String response) {
-                Log.d(getClass().toString(), "response received ");
-                String img = parse(response);
-                // si réponse, faire une ImageRequest avec l'url de la page !
-                getRemoteImage(img);
 
-            }
-        }, new Response.ErrorListener(){
-
-            /**
-             * Callback method that an error has been occurred with the
-             * provided error code and optional user-readable message.
-             *
-             * @param error
-             */
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(),"Image couldn't be updated", Toast.LENGTH_LONG).show();
-
-            }
-        });
-        requestQueue.add(sr);
-    }
-
-    private void getRemoteImage(String aURL) {
-        requestQueue = Volley.newRequestQueue(getApplicationContext());
-        ImageRequest ir = new ImageRequest(aURL, new Response.Listener<Bitmap>() {
-            @Override
-            public void onResponse(Bitmap response) {
-                /*NetworkImageView niv = (NetworkImageView) findViewById(R.id.netimageView);*/
-                ImageView niv = (ImageView) findViewById(R.id.imageView);
-                niv.setImageBitmap(response);
-
-            }
-        }, 0, 0, null,
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getApplicationContext(),"Image couldn't be downloaded", Toast.LENGTH_LONG).show();
-                    }
-                });
-                    /*URL imgURL = new URL(aURL);
-                    final URLConnection conn = imgURL.openConnection();
-                    conn.connect();
-                    final BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
-                    final Bitmap bm = BitmapFactory.decodeStream(bis);
-                    bis.close();
-                    return bm;
-                return null;*/
-
-        requestQueue.add(ir);
-    }
-
-    //method to parse BM page and get url of the pic
-    private String parse(String response) {
-        String imgUrl = null;
-        // Document doc = Jsoup.connect(Globals.URL).get();
-        Document d = Jsoup.parse(response);
-
-        // return div containing a tag, itself containing the img
-        Element div = d.getElementsByClass("photo").get(0);
-        //<img tag with src att
-        imgUrl = div.child(0).child(0).attr("src");
-
-        return imgUrl;
-    }
 
     /**
      * Simple method to save the downloaded pic to phone external storage
@@ -185,77 +88,6 @@ public class MainActivity extends ActionBarActivity {
             else
                 Toast.makeText(getApplicationContext(), "This pic is already saved", Toast.LENGTH_LONG).show();
         }
-    }
-
-    private void getPicOfTheDay_async(boolean test) {
-
-        DateTimeFormatter dtf = DateTimeFormat.forPattern(Globals.FORMAT_HOUR);
-        DateTime today = new DateTime();
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-
-        //if pref lastMaj does not exists, defaut returned value is day
-        String l = settings.getString("lastMaj", today.toString(Globals.FORMAT_HOUR));
-        //maybe there is another way to get datetime from string
-        DateTime lastMaj = dtf.parseDateTime(l);
-
-        //10am is when BM is updated
-        //if first time of the day app is launched, or if was previously launched but b4 10am
-        //then dl pic, create thumb and save it to cache it, in internal files
-        //else, show cached pic
-        if(((lastMaj.toString(Globals.FORMAT).equals(today.toString(Globals.FORMAT))
-                && lastMaj.getHourOfDay() < 10)) || (today.getDayOfYear() - lastMaj.getDayOfYear() > 0) || test)  {
-            bm.execute();
-            //asynctask donc il arrive que le bitmap soit null quand on y accède…
-           //createCache();
-        }
-         else {
-            showPic();
-        }
-
-        //update lastMaj datetime
-        SharedPreferences.Editor e = settings.edit();
-        e.putString("lastMaj", today.toString(Globals.FORMAT_HOUR));
-        e.apply();
-
-    }
-
-    //
-    private void createCache() {
-        try{
-            DateTime today = new DateTime();
-            //internalStorage test testencore
-            FileOutputStream fos = getApplicationContext().openFileOutput(today.toString("ddMMyyyy")+".jpeg", Context.MODE_PRIVATE);
-            FileOutputStream fosThumb = getApplicationContext().openFileOutput(today.toString("ddMMyyyy")+"_thumb.jpeg", Context.MODE_PRIVATE);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, fos);
-
-            //screensize
-            DisplayMetrics metrics = new DisplayMetrics();
-            getWindowManager().getDefaultDisplay().getMetrics(metrics);
-            //10thumbs in a screen ?
-            Bitmap thumb = ThumbnailUtils.extractThumbnail(bitmap, metrics.heightPixels/10, metrics.widthPixels/10);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, fosThumb);
-
-            fos.flush();
-            fos.close();
-            fosThumb.flush();
-            fosThumb.close();
-
-        }
-        catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
-    /**
-     * load pic from phone memory
-     */
-    private void showPic() {
-        /*ImageView imageView = (ImageView)findViewById(R.id.imageView);
-        imageView.setImageBitmap(bitmap);*/
     }
 
     /**
