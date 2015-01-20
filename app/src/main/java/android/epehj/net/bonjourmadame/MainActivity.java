@@ -32,9 +32,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        BMUtils.getPicOfTheDay_volley(this);
-        /*View networkImageView = (NetworkImageView)findViewById(R.id.netimageView);*/
+                /*View networkImageView = (NetworkImageView)findViewById(R.id.netimageView);*/
         View imageView = (ImageView)findViewById(R.id.imageView);
 
         imageView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -88,6 +86,58 @@ public class MainActivity extends ActionBarActivity {
             else
                 Toast.makeText(getApplicationContext(), "This pic is already saved", Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    protected void onStop() {
+        if(BMUtils.getRequestQueue() != null )
+            BMUtils.getRequestQueue().cancelAll(this);
+        Log.i(getClass().toString(), "onStop");
+        super.onStop();
+    }
+
+    /**
+     * looking at the activity lifecycle, this is the "main", where request should be put to be executed
+     *
+     */
+    @Override
+    protected void onResume() {
+        Log.i(getClass().toString(), "onResume");
+        super.onResume();
+        // if no pict
+        if(((ImageView)findViewById(R.id.imageView)).getDrawable() == null) {
+            Log.i(getClass().toString(), "onResume setting image");
+            //image from the view
+            BMUtils.getPicOfTheDay_volley(this);
+        }
+        Log.i(getClass().toString(), "onResume image is already set");
+    }
+
+    @Override
+    protected void onDestroy(){
+        Log.i(getClass().toString(), "onStart");
+        super.onDestroy();
+        }
+
+    @Override
+    protected void onRestart(){
+        Log.i(getClass().toString(), "onRestart");
+        super.onRestart();
+    }
+
+    @Override
+    protected void onStart(){
+        Log.i(getClass().toString(), "onStart");
+        super.onStart();
+    }
+
+    /**
+     * Dispatch onPause() to fragments.
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i(getClass().toString(), "onPause");
     }
 
     /**

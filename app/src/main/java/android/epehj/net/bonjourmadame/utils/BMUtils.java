@@ -29,6 +29,7 @@ public class BMUtils {
     //TODO faire la vérification que l'image à pas déjà été DL
     public static void getPicOfTheDay_volley(final Activity activity) {
         requestQueue = Volley.newRequestQueue(activity.getApplicationContext());
+        Log.i(activity.getClass().toString(), "sending request to get image bitmap");
         StringRequest sr = new StringRequest(Request.Method.GET, Globals.URL, new Response.Listener<String>() {
             /**
              * Called when a response is received.
@@ -54,7 +55,7 @@ public class BMUtils {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(activity.getApplicationContext(), "Image couldn't be updated", Toast.LENGTH_LONG).show();
-
+                Log.e(activity.getClass().toString(), error.getMessage());
             }
         });
         requestQueue.add(sr);
@@ -68,6 +69,7 @@ public class BMUtils {
                 /*NetworkImageView niv = (NetworkImageView) findViewById(R.id.netimageView);*/
                 ImageView niv = (ImageView) activity.findViewById(R.id.imageView);
                 niv.setImageBitmap(response);
+                Log.i(getClass().toString(), "getRemoteImage().onResponse() imaqe set");
 
             }
         }, 0, 0, null,
@@ -75,6 +77,7 @@ public class BMUtils {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(activity.getApplicationContext(),"Image couldn't be downloaded", Toast.LENGTH_LONG).show();
+                        Log.e(activity.getClass().toString(), error.toString());
                     }
                 });
 
@@ -96,4 +99,7 @@ public class BMUtils {
         return imgUrl;
     }
 
+    public static RequestQueue getRequestQueue() {
+        return requestQueue;
+    }
 }
