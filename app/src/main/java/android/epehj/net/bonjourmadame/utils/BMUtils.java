@@ -1,6 +1,7 @@
 package android.epehj.net.bonjourmadame.utils;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.epehj.net.bonjourmadame.R;
 import android.graphics.Bitmap;
 import android.util.Log;
@@ -25,10 +26,15 @@ import org.jsoup.nodes.Element;
 public class BMUtils {
 
     private static RequestQueue requestQueue;
+    private static ProgressDialog pd;
 
     //TODO faire la vérification que l'image à pas déjà été DL
     public static void getPicOfTheDay_volley(final Activity activity) {
         requestQueue = Volley.newRequestQueue(activity.getApplicationContext());
+        pd = ProgressDialog.show(activity,  activity.getResources().getString(R.string.dialogDownloadingTitle),
+                activity.getResources().getString(R.string.dialogDownloadingText),
+                true);
+        pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         Log.i(activity.getClass().toString(), "sending request to get image bitmap");
         StringRequest sr = new StringRequest(Request.Method.GET, Globals.URL, new Response.Listener<String>() {
             /**
@@ -54,6 +60,7 @@ public class BMUtils {
              */
             @Override
             public void onErrorResponse(VolleyError error) {
+                pd.dismiss();
                 Toast.makeText(activity.getApplicationContext(), "Image couldn't be updated", Toast.LENGTH_LONG).show();
                 Log.e(activity.getClass().toString(), error.getMessage());
             }
@@ -69,6 +76,7 @@ public class BMUtils {
                 /*NetworkImageView niv = (NetworkImageView) findViewById(R.id.netimageView);*/
                 ImageView niv = (ImageView) activity.findViewById(R.id.imageView);
                 niv.setImageBitmap(response);
+                pd.dismiss();
                 Log.i(getClass().toString(), "getRemoteImage().onResponse() imaqe set");
 
             }
@@ -76,6 +84,7 @@ public class BMUtils {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        pd.dismiss();
                         Toast.makeText(activity.getApplicationContext(),"Image couldn't be downloaded", Toast.LENGTH_LONG).show();
                         Log.e(activity.getClass().toString(), error.toString());
                     }

@@ -8,5 +8,7 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="dialogDownloadingTitle">Please wait</string>
+    <string name="dialogDownloadingText">Downloading latest Madame…</string>
 
 </resources>

@@ -6,10 +6,13 @@ import android.content.Context;
 import android.widget.RemoteViews;
 
 
+
+// formule de calcul de la taille du widget ((Nombre de colonnes / lignes) * 74) - 2
 /**
  * Implementation of App Widget functionality.
  * App Widget Configuration implemented in {@link BonjourMadameWidgetConfigureActivity BonjourMadameWidgetConfigureActivity}
  */
+// classe qui représente mon broadcast receiver
 public class BonjourMadameWidget extends AppWidgetProvider {
 
     @Override
