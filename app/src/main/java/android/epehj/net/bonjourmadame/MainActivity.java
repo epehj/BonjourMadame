@@ -98,7 +98,7 @@ public class MainActivity extends ActionBarActivity {
 
     /**
      * looking at the activity lifecycle, this is the "main", where request should be put to be executed
-     *
+     * /!\ attention, on request l'image à chaque fois que l'activité est relancée (changement d'orientation, passage en arrière plan…)
      */
     @Override
     protected void onResume() {

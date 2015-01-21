@@ -25,7 +25,6 @@ import java.net.URLConnection;
  */
 public class BMParser extends AsyncTask<Void, Void, Bitmap> {
 
-    private final String URL = "http://www.bonjourmadame.fr";
     private final Context context;
     private final Activity activity;
 
@@ -40,7 +39,7 @@ public class BMParser extends AsyncTask<Void, Void, Bitmap> {
     @Override
     protected Bitmap doInBackground(Void... params) {
         try {
-            Document doc = Jsoup.connect(URL).get();
+            Document doc = Jsoup.connect(Globals.URL).get();
             // return div containing a tag, itself containing the img
             Element div = doc.getElementsByClass("photo").get(0);
 
